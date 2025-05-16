@@ -40,6 +40,26 @@ Este paquete proporciona estructuras y funciones para facilitar la generación d
 import "github.com/pinzlab/goutil/pg"
 ```
 
+### 👣 Seguimiento de cambios (track)
+
+El subpaquete `track` permite añadir campos de auditoría automáticamente en tus modelos para llevar control de creación, actualización y eliminación de registros, integrándose fácilmente con `gorm`.
+
+#### Ejemplo de uso
+
+```go
+import ("github.com/pinzlab/goutil/pg/track")
+
+type Client struct {
+	track.Create
+	track.Update
+	track.Delete
+
+	ID       int    `gorm:"primaryKey"`
+	Name     string `gorm:"not null"`
+	Email    string `gorm:"not null"`
+}
+```
+
 ### 🔍 Consultas
 
 #### 1. Ilike – Búsqueda con ILIKE y UNACCENT
