@@ -40,7 +40,7 @@ Este paquete proporciona estructuras y funciones para facilitar la generación d
 import "github.com/pinzlab/goutil/pg"
 ```
 
-### 👣 Seguimiento de cambios (track)
+### Seguimiento de cambios (track)
 
 El subpaquete `track` permite añadir campos de auditoría automáticamente en tus modelos para llevar control de creación, actualización y eliminación de registros, integrándose fácilmente con `gorm`.
 
@@ -78,7 +78,65 @@ La estructura `Ilike` permite crear cláusulas `WHERE` con búsquedas insensible
 
 ### 🛠️ Migraciones
 
-#### 1.- Enum – Creación condicional de tipos ENUM
+El paquete `migrator` te permite aplicar migraciones estructuradas a tu base de datos PostgreSQL utilizando `gorm`. Las migraciones se ejecutan de forma transaccional y se registran en una tabla interna (`migrations`) para evitar ejecuciones duplicadas.
+
+#### Ejemplo de uso
+
+A continuación, se muestra un ejemplo de cómo definir y aplicar una migración que incluye una dependencia SQL y la creación condicional de un tipo `ENUM`:
+
+```go
+package main
+
+import (
+	"github.com/pinzlab/goutil/pg"
+	"github.com/pinzlab/goutil/pg/migrator"
+)
+
+var DB *pg.DB
+
+func main() {
+	// Abre la conexión a la base de datos
+	DB := pg.Open("postgres://postgres:postgres@localhost/goutil")
+
+	// Definición de un tipo ENUM
+	enum := &pg.Enum{
+		Name:   "status_enum",
+		Values: []string{"active", "inactive", "archived"},
+	}
+
+	// Dependencia: ejecutar SQL antes de continuar (ejemplo: extensión unaccent)
+	dep := "CREATE EXTENSION IF NOT EXISTS unaccent"
+
+	// Define la migración
+	migration := migrator.New(DB, &migrator.Migration{
+		Code:         "first-migration",
+		Name:         "Primera migración con enum y dependencia",
+		Dependencies: []*string{&dep},
+		Enums:        []*pg.Enum{enum},
+	})
+
+	// Ejecuta la migración
+	migration.Run()
+}
+```
+#### ¿Cómo funciona?
+
+Cada migración tiene un Code único, usado para llevar el control y evitar que se ejecute más de una vez.
+
+- Al ejecutar .Run(), se verifica si la migración ya fue aplicada.
+- Si no se ha aplicado, se ejecuta dentro de una transacción segura.
+- La migración se registra en la tabla migrations al finalizar exitosamente.
+
+#### Recomendaciones
+- Usa un código único por migración (Code) para asegurar trazabilidad.
+- Agrupa múltiples cambios (enums, entidades, constraints, datos) dentro de una sola estructura Migration.
+- Asegúrate de que la tabla migrations exista antes de ejecutar otras operaciones. El sistema lo maneja automáticamente en Run().
+
+#### Scripts
+
+El paquete pg incluye generadores de scripts SQL para PostgreSQL que ayudan a automatizar operaciones comunes como la creación de tipos ENUM, claves foráneas condicionales, inserciones seguras y restricciones únicas. Estos generadores están diseñados para ser seguros ante múltiples ejecuciones, evitando errores como duplicación de objetos o restricciones existentes, y pueden integrarse fácilmente en procesos de migración o inicialización de datos.
+
+##### 1.- Enum – Creación condicional de tipos ENUM
 
 Genera un script SQL que crea un tipo `ENUM` en PostgreSQL solo si no existe. Ideal para mantener la compatibilidad en entornos de desarrollo y producción sin errores por redefinición.
 
@@ -95,7 +153,7 @@ Genera un script SQL que crea un tipo `ENUM` en PostgreSQL solo si no existe. Id
 	//	END $$;
 ```
 
-#### 2.- Foreign – Claves foráneas condicionales
+##### 2.- Foreign – Claves foráneas condicionales
 Crea una clave foránea en una tabla específica, agregando restricciones de integridad referencial solo si no existen. Incluye reglas ON DELETE y ON UPDATE en cascada.
 
 ```go
@@ -117,7 +175,7 @@ Crea una clave foránea en una tabla específica, agregando restricciones de int
 	// END $$;
 ```
 
-#### 3.- Insert (Entity) – Inserciones seguras
+##### 3.- Insert (Entity) – Inserciones seguras
 Permite insertar registros en una tabla si no existen previamente, evitando duplicaciones. Se puede usar para cargar datos iniciales o hacer "seed" de forma segura.
 
 ```go
@@ -134,8 +192,8 @@ Permite insertar registros en una tabla si no existen previamente, evitando dupl
 	// WHERE NOT EXISTS (SELECT 1 FROM user WHERE username = 'myadmin');
 ```
 
-#### 4.- Unique – Índices únicos con borrado lógico
-Crea un índice único sobre una o más columnas, pero solo para registros que no estén marcados como eliminados `WHERE dat IS NULL`. Ideal para sistemas que implementan borrado lógico (soft delete).
+##### 4.- Unique – Índices únicos con eliminación lógica
+Crea un índice único sobre una o más columnas, pero solo para registros que no estén marcados como eliminados `WHERE dat IS NULL`. Ideal para sistemas que implementan eliminación lógica (soft delete).
 
 ```go
 	unique := pg.Unique{

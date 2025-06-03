@@ -1,4 +1,4 @@
-package pg
+package migrator
 
 import (
 	"testing"
