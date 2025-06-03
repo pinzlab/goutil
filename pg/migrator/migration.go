@@ -14,15 +14,15 @@ import (
 //
 // Once all operations are successful, the migration is recorded in a tracking table.
 type Migration struct {
-	Code         string         // Unique code identifier for the migration
-	Name         string         // Human-readable name for the migration
-	Dependencies []string       // Raw SQL dependencies to execute before other steps
-	Enums        []*Enum        // ENUM types to be created conditionally
-	Entities     []*interface{} // GORM models to be auto-migrated
-	Uniques      []*Unique      // Unique constraints to be added via raw SQL
-	ForeignKeys  []*Foreign     // Foreign key constraints to be added via raw SQL
-	Procedures   []string       // Stored procedures or functions in SQL
-	Data         []*Entity      // Initial data to seed conditionally
+	Code         string        // Unique code identifier for the migration
+	Name         string        // Human-readable name for the migration
+	Dependencies []string      // Raw SQL dependencies to execute before other steps
+	Enums        []*Enum       // ENUM types to be created conditionally
+	Entities     []interface{} // GORM models to be auto-migrated
+	Uniques      []*Unique     // Unique constraints to be added via raw SQL
+	ForeignKeys  []*Foreign    // Foreign key constraints to be added via raw SQL
+	Procedures   []string      // Stored procedures or functions in SQL
+	Data         []*Entity     // Initial data to seed conditionally
 }
 
 // Transaction applies the migration within the provided GORM database transaction.
@@ -55,8 +55,8 @@ func (m *Migration) Transaction(tx *gorm.DB) error {
 	}
 
 	// Migrating ENTITIES to the database.
-	if m.Entities != nil {
-		if err := tx.AutoMigrate(m.Entities); err != nil {
+	if len(m.Entities) > 0 {
+		if err := tx.AutoMigrate(m.Entities...); err != nil {
 			return err
 		}
 	}
