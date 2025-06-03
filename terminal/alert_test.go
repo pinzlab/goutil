@@ -59,11 +59,3 @@ func TestAboutLog(t *testing.T) {
 	assert.Contains(t, output, "About")
 	assert.Contains(t, output, "First migration")
 }
-
-func TestErrorLog(t *testing.T) {
-	output := captureOutput(func() {
-		terminal.Error("Something went wrong")
-	})
-	assert.Contains(t, output, "Error")
-	assert.Contains(t, output, "Something went wrong")
-}

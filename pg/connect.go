@@ -1,6 +1,7 @@
 package pg
 
 import (
+	"github.com/pinzlab/goutil/terminal"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -19,7 +20,7 @@ type Option = gorm.Option
 func Open(dns string, opts ...Option) *DB {
 	db, err := gorm.Open(postgres.Open(dns), opts...)
 	if err != nil {
-		panic("failed to connect to database: " + err.Error())
+		terminal.Panic(err)
 	}
 	return db
 }

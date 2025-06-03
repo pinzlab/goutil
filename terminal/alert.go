@@ -3,6 +3,7 @@ package terminal
 import (
 	"fmt"
 	"log"
+	"os"
 )
 
 // Alert returns a formatted string with a background color, bold title, and message.
@@ -35,7 +36,13 @@ func About(title, msg string) {
 	}
 }
 
-// Error logs a message with a red "Error" label using a styled format.
-func Error(msg string) {
-	log.Println(Alert(BgRed, "Error", msg))
+// Error logs an error message with a red "Error" label.
+func Error(err error) {
+	log.Println(Alert(BgRed, "Error", err.Error()))
+}
+
+// Panic logs an error with a red "Panic" label and exits the program.
+func Panic(err error) {
+	log.Println(Alert(BgRed, "Panic", err.Error()))
+	os.Exit(1)
 }
