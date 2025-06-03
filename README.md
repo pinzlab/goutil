@@ -92,7 +92,7 @@ import (
 	"github.com/pinzlab/goutil/pg/migrator"
 )
 
-var DB *pg.DB
+var DB *gorm.DB
 
 func main() {
 	// Abre la conexión a la base de datos

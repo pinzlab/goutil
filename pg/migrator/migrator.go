@@ -1,15 +1,15 @@
 package migrator
 
 import (
-	"github.com/pinzlab/goutil/pg"
 	"github.com/pinzlab/goutil/terminal"
+	"gorm.io/gorm"
 )
 
 // migrator manages the execution of a sequence of database migrations
 // in a PostgreSQL database using GORM. It ensures that each migration
 // is applied exactly once by recording them in a tracking table.
 type migrator struct {
-	db     *pg.DB       // Database connection
+	db     *gorm.DB     // Database connection
 	schema []*Migration // List of migrations to apply
 }
 
@@ -17,12 +17,12 @@ type migrator struct {
 // and a variadic list of migration definitions.
 //
 // Parameters:
-//   - db: a pointer to the pg.DB instance (PostgreSQL GORM wrapper)
+//   - db: a pointer to the gorm.DB instance (PostgreSQL GORM wrapper)
 //   - items: variadic list of pointers to Migration structs
 //
 // Returns:
 //   - *migrator: a configured migrator ready to run migrations
-func New(db *pg.DB, items ...*Migration) *migrator {
+func New(db *gorm.DB, items ...*Migration) *migrator {
 	return &migrator{
 		db:     db,
 		schema: items,
