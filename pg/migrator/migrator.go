@@ -95,11 +95,14 @@ func (m *migrator) checkMigration(code string) (bool, error) {
 // Returns:
 //   - error: if any migration step fails
 func (m *migrator) Run() error {
+
+	// create Tracker table if does not exists
 	err := m.migrateTracker()
 	if err != nil {
 		return err
 	}
 
+	// migrate the schema
 	for _, migration := range m.schema {
 		exists, err := m.checkMigration(migration.Code)
 		if err != nil {

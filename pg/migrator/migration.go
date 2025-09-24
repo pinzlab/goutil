@@ -14,8 +14,9 @@ import (
 //
 // Once all operations are successful, the migration is recorded in a tracking table.
 type Migration struct {
-	Code         string        // Unique code identifier for the migration
-	Name         string        // Human-readable name for the migration
+	Code         string        // Unique code identifier for the migration (max 20 chars)
+	Name         string        // Human-readable name for the migration (max 100 chars)
+	Description  string        // Optional detailed description of the migration (max 255 chars)
 	Dependencies []string      // Raw SQL dependencies to execute before other steps
 	Enums        []*Enum       // ENUM types to be created conditionally
 	Entities     []interface{} // GORM models to be auto-migrated

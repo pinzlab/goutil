@@ -15,8 +15,12 @@ type tracker struct {
 	CreatedAt time.Time `gorm:"column:cat;type:timestamptz;default:now();not null"`
 
 	// Name is a human-readable name or label for the migration.
-	// It is required and limited to 255 characters.
-	Name string `gorm:"type:varchar(255);not null"`
+	// It is required and limited to 100 characters.
+	Name string `gorm:"type:varchar(100);not null"`
+
+	// Description is an field that provides more details about the migration.
+	// It can be null and is limited to 255 characters.
+	Description string `gorm:"type:varchar(255);not null"`
 }
 
 // TableName overrides the default GORM table name for the tracker struct.
