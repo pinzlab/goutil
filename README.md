@@ -108,7 +108,10 @@ func main() {
 	dep := "CREATE EXTENSION IF NOT EXISTS unaccent"
 
 	// Define la migración
-	migration := migrator.New(DB, &migrator.Migration{
+	migration := migrator.New(DB)
+	
+	// Agregar esquema de migración
+	migration.AddSchema(&migrator.SchemaMigration{
 		Code:         "first-migration",
 		Name:         "Primera migración con enum y dependencia",
 		Dependencies: []*string{&dep},
