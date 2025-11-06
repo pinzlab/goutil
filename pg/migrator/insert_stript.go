@@ -3,6 +3,7 @@ package migrator
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 // Entity represents a table and a set of rows to insert,
@@ -33,6 +34,9 @@ func (e *Entity) GetScript() string {
 			switch any(value).(type) {
 			case string:
 				values = append(values, fmt.Sprintf("'%s'", value))
+			case time.Time:
+				formattedTime := (value).(time.Time).Format(time.RFC3339Nano)
+				values = append(values, fmt.Sprintf("'%s'", formattedTime))
 			case nil:
 				values = append(values, "null")
 			default:

@@ -79,5 +79,10 @@ func (m *SchemaMigration) Execute(tx *gorm.DB) error {
 		}
 	}
 
+	// Save the migration record to the tracking table.
+	if err := tx.Create(&tracker{Code: m.Code, Name: m.Name, Description: m.Description}).Error; err != nil {
+		return err
+	}
+
 	return nil
 }
