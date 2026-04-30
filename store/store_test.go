@@ -20,7 +20,7 @@ func TestAddAndGet(t *testing.T) {
 
 	assert.True(t, ok, "Expected value to be present, but it was not found.")
 	assert.Equal(t, value, got.Value, "Returned value does not match expected value.")
-	assert.Greater(t, got.ExpiresAt, time.Now().Unix(), "ExpiresAt should be in the future.")
+	assert.Greater(t, got.ExpiresAt, time.Now().UTC().Unix(), "ExpiresAt should be in the future.")
 }
 
 func TestAddWithTTL(t *testing.T) {

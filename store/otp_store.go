@@ -30,7 +30,7 @@ func NewOTPStore[P ~string](ttl time.Duration) *OTPStore[P] {
 // Returns:
 // - a string representing the generated OTP (e.g., "482913")
 func (s *OTPStore[P]) generateOTP() string {
-	src := rand.NewSource(time.Now().UnixNano())
+	src := rand.NewSource(time.Now().UTC().UnixNano())
 	r := rand.New(src)
 	return fmt.Sprintf("%06d", r.Intn(1000000))
 }

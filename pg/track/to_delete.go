@@ -19,7 +19,7 @@ import (
 func ToSoftDelete(deletedBy *int64) map[string]interface{} {
 	updates := make(map[string]interface{})
 
-	updates["DeletedAt"] = time.Now()
+	updates["DeletedAt"] = time.Now().UTC()
 	if deletedBy != nil {
 		updates["DeletedBy"] = deletedBy
 	}

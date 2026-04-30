@@ -28,7 +28,7 @@ func ToUpdate(data interface{}, updatedBy *int64) map[string]interface{} {
 
 	updates := make(map[string]interface{})
 
-	updates["UpdatedAt"] = time.Now()
+	updates["UpdatedAt"] = time.Now().UTC()
 	if updatedBy != nil {
 		updates["UpdatedBy"] = updatedBy
 	}

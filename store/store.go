@@ -32,7 +32,7 @@ func (s *Store[D]) Add(key string, value D, ttl time.Duration) {
 
 	s.store[key] = Value[D]{
 		Value:     value,
-		ExpiresAt: time.Now().Add(ttl).Unix(),
+		ExpiresAt: time.Now().UTC().Add(ttl).Unix(),
 	}
 
 	// Launch a goroutine to remove the item once TTL expires

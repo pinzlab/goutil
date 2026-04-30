@@ -26,7 +26,7 @@ func injectCreatedFields(entity interface{}, createdBy *int64) {
 			if createdBy != nil {
 				createdAt := field.FieldByName("CreatedAt")
 				if createdAt.IsValid() && createdAt.CanSet() {
-					createdAt.Set(reflect.ValueOf(time.Now()))
+					createdAt.Set(reflect.ValueOf(time.Now().UTC().UTC()))
 				}
 
 				createdByField := field.FieldByName("CreatedBy")
@@ -40,7 +40,7 @@ func injectCreatedFields(entity interface{}, createdBy *int64) {
 		case reflect.TypeOf(CreateOnly{}):
 			createdAt := field.FieldByName("CreatedAt")
 			if createdAt.IsValid() && createdAt.CanSet() {
-				createdAt.Set(reflect.ValueOf(time.Now()))
+				createdAt.Set(reflect.ValueOf(time.Now().UTC()))
 			}
 
 			return
