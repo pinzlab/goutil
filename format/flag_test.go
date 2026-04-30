@@ -32,7 +32,7 @@ func TestFlag(t *testing.T) {
 
 	for _, item := range tests {
 		t.Run(item.input, func(t *testing.T) {
-			flag := Flag(item.input)
+			flag := Slug(item.input)
 			assert.Equal(t, item.expected, flag, "Expected %q but got %q", item.expected, flag)
 		})
 	}

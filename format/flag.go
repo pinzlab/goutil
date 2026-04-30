@@ -4,10 +4,16 @@ import (
 	"strings"
 )
 
-// Flag generates a URL-friendly flag from the given input string.
+// Slug generates a URL-friendly slug from the given input string.
 // It replaces spaces with hyphens, removes accents, and converts
 // the result to lowercase.
-func Flag(input string) string {
+//
+// Example:
+//
+//	input  := "Hola Señor Mundo"
+//	output := Slug(input)
+//	// output: "hola-senor-mundo"
+func Slug(input string) string {
 	// Replace spaces with hyphens
 	result := strings.ReplaceAll(strings.ToLower(input), " ", "-")
 
@@ -42,7 +48,6 @@ func Flag(input string) string {
 
 // normalizeHyphens replaces multiple consecutive hyphens with a single hyphen
 func normalizeHyphens(s string) string {
-	// Replace multiple hyphens with a single hyphen
 	return strings.Join(strings.FieldsFunc(s, func(r rune) bool {
 		return r == '-'
 	}), "-")
